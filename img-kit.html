@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Converter Pro - By Sayed Qutubudin Shah</title>
+    <meta name="description" content="Professional file conversion toolkit with multiple utilities">
+    
+    <!-- External Libraries -->
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.min.js"></script>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_AD_CLIENT_ID" crossorigin="anonymous"></script>
+
+    <style>
+        :root {
+            --color1: #FFEBEE;
+            --color2: #F3E5F5;
+            --color3: #E8EAF6;
+            --color4: #E0F2F1;
+            --color5: #FBE9E7;
+            --color6: #FFF8E1;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f4f8;
+            color: #2c3e50;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(45deg, #2c3e50, #3498db);
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            color: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .tool-card {
+            padding: 1.5rem;
+            border-radius: 15px;
+            background: white;
+            transition: transform 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 5px solid;
+        }
+
+        .color1 { border-color: #e74c3c; background: var(--color1); }
+        .color2 { border-color: #3498db; background: var(--color2); }
+        .color3 { border-color: #9b59b6; background: var(--color3); }
+        .color4 { border-color: #2ecc71; background: var(--color4); }
+        .color5 { border-color: #f1c40f; background: var(--color5); }
+        .color6 { border-color: #e67e22; background: var(--color6); }
+
+        input[type="file"], input[type="date"], input[type="range"], select {
+            margin: 1rem 0;
+            padding: 0.8rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            width: 100%;
+            background: white;
+        }
+
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        button:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .loading {
+            display: none;
+            color: #3498db;
+            font-weight: bold;
+            margin: 10px 0;
+            text-align: center;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            margin: 10px 0;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .success-message {
+            color: #2ecc71;
+            margin: 10px 0;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            background: #2c3e50;
+            border-radius: 15px;
+            margin-top: 2rem;
+            color: white;
+        }
+
+        .ads {
+            margin: 2rem 0;
+            padding: 1rem;
+            background: white;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .tool-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>📁 Ultimate Converter Pro</h1>
+            <p>Professional File Conversion Toolkit</p>
+        </header>
+
+        <div class="ads">
+            <!-- AdSense Header Ad -->
+            <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-YOUR_AD_CLIENT_ID" data-ad-slot="HEADER_AD_SLOT"></ins>
+        </div>
+
+        <div class="tool-grid">
+            <!-- Image to PDF -->
+            <div class="tool-card color1">
+                <h2>🖼️ Image to PDF</h2>
+                <input type="file" id="imageInput" accept="image/*" multiple>
+                <button onclick="handleImageToPdf()">Convert Now</button>
+                <div class="loading" id="imageLoading">Converting...</div>
+                <div class="error-message" id="imageError"></div>
+                <div class="success-message" id="imageSuccess"></div>
+            </div>
+
+            <!-- PDF to Image -->
+            <div class="tool-card color2">
+                <h2>📄 PDF to Image</h2>
+                <input type="file" id="pdfInput" accept=".pdf">
+                <button onclick="handlePdfToImage()">Convert Now</button>
+                <div class="loading" id="pdfLoading">Converting...</div>
+                <div class="error-message" id="pdfError"></div>
+            </div>
+
+            <!-- Image Compression -->
+            <div class="tool-card color3">
+                <h2>📸 Image Compression</h2>
+                <input type="file" id="compressInput" accept="image/*">
+                <input type="range" min="0" max="1" step="0.1" id="quality" value="0.8">
+                <button onclick="compressImage()">Compress Now</button>
+                <div class="loading" id="compressLoading">Compressing...</div>
+                <div class="error-message" id="compressError"></div>
+            </div>
+
+            <!-- Image to Audio -->
+            <div class="tool-card color4">
+                <h2>🎵 Image to Audio</h2>
+                <input type="file" id="audioInput" accept="image/*">
+                <button onclick="convertImageToAudio()">Convert Now</button>
+                <div class="loading" id="audioLoading">Converting...</div>
+                <div class="error-message" id="audioError"></div>
+            </div>
+
+            <!-- Age Calculator -->
+            <div class="tool-card color5">
+                <h2>🎂 Age Calculator</h2>
+                <input type="date" id="dob">
+                <button onclick="calculateAge()">Calculate Age</button>
+                <div id="ageResult" class="success-message"></div>
+            </div>
+
+            <!-- Office Converter -->
+            <div class="tool-card color6">
+                <h2>📁 Office Converter</h2>
+                <input type="file" id="officeInput" accept=".doc,.docx,.xls,.xlsx,.ppt,.pptx">
+                <select id="officeFormat" style="width:100%; margin:1rem 0; padding:0.8rem">
+                    <option value="pdf">PDF</option>
+                    <option value="docx">DOCX</option>
+                    <option value="xlsx">XLSX</option>
+                </select>
+                <button onclick="convertOfficeFile()">Convert Now</button>
+                <div class="loading" id="officeLoading">Converting...</div>
+                <div class="error-message" id="officeError"></div>
+            </div>
+        </div>
+
+        <div class="ads">
+            <!-- AdSense Footer Ad -->
+            <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-YOUR_AD_CLIENT_ID" data-ad-slot="FOOTER_AD_SLOT"></ins>
+        </div>
+
+        <footer>
+            <h3>Presented by Sayed Qutubudin Shah</h3>
+            <p>📧 <a href="mailto:qutubuddin.ns@gmail.com" style="color: #3498db;">Email for Suggestions</a></p>
+            <p>📱 WhatsApp: +923003093724</p>
+        </footer>
+    </div>
+
+    <script>
+        // Common Utilities
+        function showError(elementId, message) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            setTimeout(() => element.textContent = '', 5000);
+        }
+
+        function toggleLoader(loaderId, show) {
+            document.getElementById(loaderId).style.display = show ? 'block' : 'none';
+        }
+
+        // Image to PDF Conversion
+        async function handleImageToPdf() {
+            const input = document.getElementById('imageInput');
+            try {
+                toggleLoader('imageLoading', true);
+                if (!input.files?.length) throw new Error('Please select images');
+                
+                const pdfDoc = await PDFLib.PDFDocument.create();
+                for (const file of input.files) {
+                    if (!['image/jpeg', 'image/png'].includes(file.type)) 
+                        throw new Error('Only JPG/PNG allowed');
+                    
+                    const imgUrl = await new Promise(resolve => {
+                        const reader = new FileReader();
+                        reader.onload = () => resolve(reader.result);
+                        reader.readAsDataURL(file);
+                    });
+                    
+                    const image = await pdfDoc.embedPng(imgUrl);
+                    const page = pdfDoc.addPage([image.width, image.height]);
+                    page.drawImage(image, { x: 0, y: 0 });
+                }
+
+                const pdfBytes = await pdfDoc.save();
+                const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `converted-${Date.now()}.pdf`;
+                a.click();
+                URL.revokeObjectURL(url);
+                document.getElementById('imageSuccess').textContent = 'Conversion successful!';
+            } catch (error) {
+                showError('imageError', error.message);
+            } finally {
+                toggleLoader('imageLoading', false);
+            }
+        }
+
+        // PDF to Image Conversion
+        async function handlePdfToImage() {
+            const input = document.getElementById('pdfInput');
+            try {
+                toggleLoader('pdfLoading', true);
+                if (!input.files[0]) throw new Error('Please select a PDF');
+                
+                const pdfData = await input.files[0].arrayBuffer();
+                const pdf = await pdfjsLib.getDocument({ data: pdfData }).promise;
+                const page = await pdf.getPage(1);
+                
+                const viewport = page.getViewport({ scale: 1.5 });
+                const canvas = document.createElement('canvas');
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+                
+                await page.render({
+                    canvasContext: canvas.getContext('2d'),
+                    viewport: viewport
+                }).promise;
+
+                const url = canvas.toDataURL('image/png');
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `page-1-${Date.now()}.png`;
+                a.click();
+            } catch (error) {
+                showError('pdfError', error.message);
+            } finally {
+                toggleLoader('pdfLoading', false);
+            }
+        }
+
+        // Image Compression
+        async function compressImage() {
+            const input = document.getElementById('compressInput');
+            try {
+                toggleLoader('compressLoading', true);
+                const file = input.files[0];
+                if (!file) throw new Error('Please select an image');
+                
+                const quality = parseFloat(document.getElementById('quality').value);
+                const img = await new Promise(resolve => {
+                    const reader = new FileReader();
+                    reader.onload = () => resolve(reader.result);
+                    reader.readAsDataURL(file);
+                });
+                
+                const image = new Image();
+                image.src = img;
+                await new Promise(resolve => image.onload = resolve);
+                
+                const canvas = document.createElement('canvas');
+                canvas.width = image.width;
+                canvas.height = image.height;
+                canvas.getContext('2d').drawImage(image, 0, 0);
+                
+                canvas.toBlob(blob => {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `compressed-${file.name}`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                }, file.type, quality);
+            } catch (error) {
+                showError('compressError', error.message);
+            } finally {
+                toggleLoader('compressLoading', false);
+            }
+        }
+
+        // Age Calculator
+        function calculateAge() {
+            const dob = new Date(document.getElementById('dob').value);
+            const diff = Date.now() - dob.getTime();
+            const ageDate = new Date(diff);
+            const years = ageDate.getUTCFullYear() - 1970;
+            const months = ageDate.getUTCMonth();
+            const days = ageDate.getUTCDate() - 1;
+            document.getElementById('ageResult').innerHTML = 
+                `Age: ${years} years, ${months} months, ${days} days`;
+        }
+
+        // Office File Conversion
+        async function convertOfficeFile() {
+            const input = document.getElementById('officeInput');
+            try {
+                toggleLoader('officeLoading', true);
+                if (!input.files[0]) throw new Error('Please select an Office file');
+                
+                // This requires server-side implementation
+                // Here's a mock implementation
+                throw new Error('Office conversion requires server-side processing');
+            } catch (error) {
+                showError('officeError', error.message);
+            } finally {
+                toggleLoader('officeLoading', false);
+            }
+        }
+
+        // Image to Audio Conversion
+        async function convertImageToAudio() {
+            const input = document.getElementById('audioInput');
+            try {
+                toggleLoader('audioLoading', true);
+                if (!input.files[0]) throw new Error('Please select an image');
+                
+                const file = input.files[0];
+                const reader = new FileReader();
+                const img = await new Promise(resolve => {
+                    reader.onload = () => resolve(reader.result);
+                    reader.readAsDataURL(file);
+                });
+                
+                const image = new Image();
+                image.src = img;
+                await new Promise(resolve => image.onload = resolve);
+                
+                // Simple image to audio conversion (concept)
+                const canvas = document.createElement('canvas');
+                canvas.width = image.width;
+                canvas.height = image.height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(image, 0, 0);
+                
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                // Generate sound based on pixel data
+                let frequency = 0;
+                for (let i = 0; i < imageData.length; i += 4) {
+                    frequency += (imageData[i] + imageData[i+1] + imageData[i+2]) / 3;
+                }
+                frequency = (frequency / (imageData.length / 4)) * 10;
+
+                oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                oscillator.start();
+                
+                setTimeout(() => {
+                    oscillator.stop();
+                    const blob = new Blob([], { type: 'audio/wav' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `audio-${Date.now()}.wav`;
+                    a.click();
+                }, 1000);
+                
+            } catch (error) {
+                showError('audioError', error.message);
+            } finally {
+                toggleLoader('audioLoading', false);
+            }
+        }
+
+        // Initialize AdSense
+        (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+</body>
+</html>
